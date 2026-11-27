@@ -78,13 +78,26 @@ class FixedPriorityQueue:
         Add an element to a queue based on its priority.
         If the priority is invalid ValueError is raised.
         If the queue is full an OverFlowError is raised.
+
+        >>> fpq = FixedPriorityQueue()
+        >>> fpq.enqueue(-1, 5)
+        Traceback (most recent call last):
+            ...
+        ValueError: Valid priorities are 0, 1, and 2
+        >>> fpq.enqueue(3, 5)
+        Traceback (most recent call last):
+            ...
+        ValueError: Valid priorities are 0, 1, and 2
+        >>> print(fpq)
+        Priority 0: []
+        Priority 1: []
+        Priority 2: []
         """
-        try:
-            if len(self.queues[priority]) >= 100:
-                raise OverflowError("Maximum queue size is 100")
-            self.queues[priority].append(data)
-        except IndexError:
+        if not 0 <= priority < len(self.queues):
             raise ValueError("Valid priorities are 0, 1, and 2")
+        if len(self.queues[priority]) >= 100:
+            raise OverflowError("Maximum queue size is 100")
+        self.queues[priority].append(data)
 
     def dequeue(self) -> int:
         """
