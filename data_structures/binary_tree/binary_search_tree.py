@@ -276,6 +276,18 @@ class BinarySearchTree:
         return node
 
     def remove(self, value: int) -> None:
+        """
+        >>> tree = BinarySearchTree().insert(0, 1, 0, 1)
+        >>> tree.remove(1)
+        >>> tuple(tree)
+        (0, 0, 1)
+        >>> tree.remove(0)
+        >>> tuple(tree)
+        (0, 1)
+        >>> tree.remove(0)
+        >>> tuple(tree)
+        (1,)
+        """
         # Look for the node with that label
         node = self.search(value)
         if node is None:
@@ -292,9 +304,12 @@ class BinarySearchTree:
             predecessor = self.get_max(
                 node.left
             )  # Gets the max value of the left branch
-            self.remove(predecessor.value)  # type: ignore[union-attr]
+            assert predecessor is not None
+            # Unlink the predecessor node itself. Removing it by value could find
+            # a different node holding an equal value (duplicates are allowed).
+            self.__reassign_nodes(predecessor, predecessor.left)
             node.value = (
-                predecessor.value  # type: ignore[union-attr]
+                predecessor.value
             )  # Assigns the value to the node to delete and keep tree structure
 
     def preorder_traverse(self, node: Node | None) -> Iterable:
