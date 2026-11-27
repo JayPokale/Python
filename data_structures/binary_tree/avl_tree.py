@@ -228,13 +228,15 @@ def del_node(root: MyNode, data: Any) -> MyNode | None:
     match get_height(right_child) - get_height(left_child):
         case 2:
             assert right_child is not None
-            if get_height(right_child.get_right()) > get_height(right_child.get_left()):
+            if get_height(right_child.get_right()) >= get_height(
+                right_child.get_left()
+            ):
                 root = left_rotation(root)
             else:
                 root = rl_rotation(root)
         case -2:
             assert left_child is not None
-            if get_height(left_child.get_left()) > get_height(left_child.get_right()):
+            if get_height(left_child.get_left()) >= get_height(left_child.get_right()):
                 root = right_rotation(root)
             else:
                 root = lr_rotation(root)
@@ -288,6 +290,23 @@ class AVLtree:
         self.root = insert_node(self.root, data)
 
     def del_node(self, data: Any) -> None:
+        """
+        Deleting a node must leave the tree balanced. Here the right child of the
+        unbalanced node has subtrees of equal height, so a single rotation is needed.
+
+        >>> t = AVLtree()
+        >>> for i in [7, 5, 1, 2, 3, 6, 0, 4]:
+        ...     t.insert(i)  # doctest: +ELLIPSIS
+        insert:7
+        ...
+        >>> t.del_node(7)
+        delete:7
+        left rotation node: 5
+        >>> t.root.get_data()
+        2
+        >>> get_height(t.root.get_left()), get_height(t.root.get_right())
+        (2, 3)
+        """
         print("delete:" + str(data))
         if self.root is None:
             print("Tree is empty!")
